@@ -55,7 +55,7 @@ Create a README.md file with instructions on how to set up and use the developme
 1. Copy the .env.template to .env and fill in your AWS credentials.
 2. Create a 'code' directory in the project folder for your development files.
 3. Build and start the container using `docker-compose up -d`.
-4. Access the container using `docker-compose exec full-stack-dev bash`.
+4. Access the container using `docker-compose exec aws-dev bash`.
 
 ## Security Considerations
 

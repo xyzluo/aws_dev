@@ -1,6 +1,6 @@
-# AWS Full-Stack Development Environment
+# AWS Development Environment
 
-This project sets up a secure and consistent AWS full-stack development environment using Docker Compose.
+This project sets up a secure and consistent AWS development environment using Docker Compose.
 
 ## Setup
 
@@ -16,19 +16,56 @@ This project sets up a secure and consistent AWS full-stack development environm
    docker-compose up -d   ```
 
 5. Access the container:   ```
-   docker-compose exec full-stack-dev bash   ```
+   docker-compose exec aws-dev bash   ```
 
 ## Features
 
-- Ubuntu 22.04 base image
 - AWS CLI v2
 - Python 3 with boto3
-- Node.js and npm
 - Git
 - Non-root user
 - Mounted SSH keys directory
 - Mounted code directory
-- Exposed ports for Node.js (3000) and Python (8000) applications
+
+## Building and Pushing the Docker Image
+
+You can build and push the Docker image using either Docker commands or Docker Compose.
+
+### Using Docker commands:
+
+1. Ensure you're logged in to Docker Hub:
+   ```
+   docker login
+   ```
+
+2. Build and tag the image:
+   ```
+   docker build -t duduli168/aws-fullstack-dev:latest .
+   ```
+
+3. Push the image:
+   ```
+   docker push duduli168/aws-fullstack-dev:latest
+   ```
+
+### Using Docker Compose:
+
+1. Build the image:
+   ```
+   docker-compose build
+   ```
+
+2. Push the image:
+   ```
+   docker-compose push
+   ```
+
+   Or, combine these steps:
+   ```
+   docker-compose build aws-dev && docker-compose push aws-dev
+   ```
+
+Note: Replace "duduli168" with your actual Docker Hub username if it's different.
 
 ## Security Note
 
