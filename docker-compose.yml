@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  full-stack-dev:
+    image: duduli168/aws-fullstack-dev:latest
+    build: .
+    env_file: .env
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_DEFAULT_REGION
+      - AWS_SESSION_TOKEN
+    volumes:
+      - ~/.ssh:/home/devuser/.ssh:ro
+      - ./code:/home/devuser/code
+    ports:
+      - "3000:3000"  # For Node.js applications
+      - "8000:8000"  # For Python applications
+    command: tail -f /dev/null
+
+volumes:
+  code:
