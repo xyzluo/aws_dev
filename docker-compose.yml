@@ -2,8 +2,14 @@ version: '3.8'
 
 services:
   aws-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        USER_ID: "${UID:-1000}"
+        GROUP_ID: "${GID:-1000}"
+        USERNAME: "${USER:-$(whoami)}"
     image: duduli168/aws-fullstack-dev:latest
-    build: .
     env_file: .env
     environment:
       - AWS_ACCESS_KEY_ID
@@ -11,8 +17,8 @@ services:
       - AWS_DEFAULT_REGION
       - AWS_SESSION_TOKEN
     volumes:
-      - ~/.ssh:/home/devuser/.ssh:ro
-      - ./code:/home/devuser/code
+      - ~/.ssh:/home/${USER:-$(whoami)}/.ssh:ro
+      - ./code:/home/${USER:-$(whoami)}/code
     ports:
       - "3000:3000"  # For Node.js applications
       - "8000:8000"  # For Python applications

@@ -3,6 +3,16 @@ FROM ubuntu:22.04
 # Avoid prompts from apt
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Accept build arguments for user ID and group ID
+ARG USER_ID
+ARG GROUP_ID
+ARG USERNAME
+
+# print user id and group id
+RUN echo "User ID: $USER_ID"
+RUN echo "Group ID: $GROUP_ID"
+RUN echo "Username: $USERNAME"
+
 # Update and install basic tools
 RUN apt-get update && apt-get install -y \
     curl \
@@ -10,6 +20,7 @@ RUN apt-get update && apt-get install -y \
     gnupg \
     lsb-release \
     software-properties-common \
+    sudo \
     unzip \
     vim \
     wget \
@@ -35,13 +46,27 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
 # Install AWS Python SDK (boto3)
 RUN pip3 install --no-cache-dir boto3
 
-# Create a non-root user
-RUN useradd -m -s /bin/bash devuser
+# Install Terraform
+RUN wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null \
+    && echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list \
+    && apt-get update && apt-get install -y terraform \
+    && rm -rf /var/lib/apt/lists/*
 
-USER devuser
+# print user id and group id
+RUN echo "User ID: $USER_ID"
+RUN echo "Group ID: $GROUP_ID"
+RUN echo "Username: $USERNAME"
+
+
+# Create a non-root user with the same UID and GID as the host user
+RUN groupadd -g ${GROUP_ID:-1000} ${USERNAME:-user} \
+    && useradd -m -u ${USER_ID:-1000} -g ${GROUP_ID:-1000} -s /bin/bash ${USERNAME:-user} \
+    && echo "${USERNAME:-user} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+USER $USERNAME
 
 # Set working directory
-WORKDIR /home/devuser
+WORKDIR /home/$USERNAME
 
 # Set default command
 CMD ["/bin/bash"]
